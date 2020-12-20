@@ -7,7 +7,7 @@ public class King extends Piece {
     }
 
     @Override
-    public boolean move(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
+    public boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
         validateInput(board, currentRow, currentColumn, moveToRow, moveToColumn);
         if(board[currentRow][currentColumn] == null) {
             System.err.println("No piece at current location");
@@ -26,8 +26,8 @@ public class King extends Piece {
             System.err.println("King must move one square");
             return false;
         }
-        board[moveToRow][moveToColumn] = board[currentRow][currentColumn];
-        board[currentRow][currentColumn] = null;
+        /*board[moveToRow][moveToColumn] = board[currentRow][currentColumn];
+        board[currentRow][currentColumn] = null;*/
         return true;
     }
 }

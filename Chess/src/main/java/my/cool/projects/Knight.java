@@ -7,7 +7,7 @@ public class Knight extends Piece {
     }
 
     @Override
-    public boolean move(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
+    public boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
         validateInput(board, currentRow, currentColumn, moveToRow, moveToColumn);
         if(board[currentRow][currentColumn] == null) {
             System.err.println("No piece at current location");
@@ -28,8 +28,8 @@ public class Knight extends Piece {
             System.err.println("Knights must move 2 in one direction and 1 in the other");
             return false;
         }
-        board[moveToRow][moveToColumn] = board[currentRow][currentColumn];
-        board[currentRow][currentColumn] = null;
+        /*board[moveToRow][moveToColumn] = board[currentRow][currentColumn];
+        board[currentRow][currentColumn] = null;*/
         return true;
     }
 }

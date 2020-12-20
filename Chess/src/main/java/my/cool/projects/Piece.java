@@ -2,20 +2,27 @@ package my.cool.projects;
 
 public abstract class Piece {
     Color color;
+    BoardLocation boardLocation;
 
-    public Piece(Color color) {
+    public Piece(Color color, BoardLocation boardLocation) {
         switch (color) {
             case WHITE:
             case BLACK:
                 this.color = color;
+                break;
             default:
                 throw new IllegalArgumentException("Invalid piece color");
         }
+        this.boardLocation = boardLocation;
     }
+
+    public enum PieceType {PAWN, KNIGHT, BISHOP, ROOK, QUEEN, KING};
 
     public enum Color {WHITE, BLACK};
 
-    public abstract boolean move(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn);
+    public abstract boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn);
+
+    public abstract boolean validCapture(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn);
 
     public void validateInput(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
         if(board == null) {
