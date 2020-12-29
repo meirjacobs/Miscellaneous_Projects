@@ -44,8 +44,8 @@ public class PlayChess {
     }
 
     private static int determineMoveToColumn(String move) {
-        int column = move.charAt(move.length()-2) - 97;
-        if(column < 0 || column > 7) {
+        int column = move.charAt(move.length()-2) - 96;
+        if(column < 1 || column > 8) {
             System.err.println((char)column + "is not a valid column");
             return -1;
         }
@@ -53,8 +53,8 @@ public class PlayChess {
     }
 
     private static int determineMoveToRow(String move) {
-        int row = move.charAt(move.length()-2) - 97;
-        if(row < 0 || row > 7) {
+        int row = move.charAt(move.length()-2) - 96;
+        if(row < 1 || row > 8) {
             System.err.println((char)row + "is not a valid row");
             return -1;
         }
@@ -98,41 +98,42 @@ public class PlayChess {
     }
 
     private static void initializeBoard() {
-        board = new Piece[8][8];
-        board[0][0] = new Rook(Piece.Color.WHITE, new BoardLocation(0,0));
-        board[0][1] = new Knight(Piece.Color.WHITE, new BoardLocation(0,1));
-        board[0][2] = new Bishop(Piece.Color.WHITE, new BoardLocation(0,2));
-        board[0][3] = new Queen(Piece.Color.WHITE, new BoardLocation(0,3));
-        board[0][4] = new King(Piece.Color.WHITE, new BoardLocation(0,4));
-        board[0][5] = new Bishop(Piece.Color.WHITE, new BoardLocation(0,5));
-        board[0][6] = new Knight(Piece.Color.WHITE, new BoardLocation(0,6));
-        board[0][7] = new Rook(Piece.Color.WHITE, new BoardLocation(0,7));
-        for(int i = 0; i < 8; i++) {
-            board[1][i] = new Pawn(Piece.Color.WHITE, new BoardLocation(1,i));
+        board = new Piece[9][9];
+        board[1][1] = new Rook(Piece.Color.WHITE, new BoardLocation(1,1));
+        board[1][2] = new Knight(Piece.Color.WHITE, new BoardLocation(1,2));
+        board[1][3] = new Bishop(Piece.Color.WHITE, new BoardLocation(1,3));
+        board[1][4] = new Queen(Piece.Color.WHITE, new BoardLocation(1,4));
+        board[1][5] = new King(Piece.Color.WHITE, new BoardLocation(1,5));
+        board[1][6] = new Bishop(Piece.Color.WHITE, new BoardLocation(1,6));
+        board[1][7] = new Knight(Piece.Color.WHITE, new BoardLocation(1,7));
+        board[1][8] = new Rook(Piece.Color.WHITE, new BoardLocation(1,8));
+        for(int i = 1; i <= 8; i++) {
+            board[1][i] = new Pawn(Piece.Color.WHITE, new BoardLocation(2,i));
         }
-        board[7][0] = new Rook(Piece.Color.BLACK, new BoardLocation(7,0));
-        board[7][1] = new Knight(Piece.Color.BLACK, new BoardLocation(7,1));
-        board[7][2] = new Bishop(Piece.Color.BLACK, new BoardLocation(7,2));
-        board[7][3] = new Queen(Piece.Color.BLACK, new BoardLocation(7,3));
-        board[7][4] = new King(Piece.Color.BLACK, new BoardLocation(7,4));
-        board[7][5] = new Bishop(Piece.Color.BLACK, new BoardLocation(7,5));
-        board[7][6] = new Knight(Piece.Color.BLACK, new BoardLocation(7,6));
-        board[7][7] = new Rook(Piece.Color.BLACK, new BoardLocation(7,7));
-        for(int i = 0; i < 8; i++) {
-            board[6][i] = new Pawn(Piece.Color.BLACK, new BoardLocation(6,i));
+        board[8][1] = new Rook(Piece.Color.BLACK, new BoardLocation(8,1));
+        board[8][2] = new Knight(Piece.Color.BLACK, new BoardLocation(8,2));
+        board[8][3] = new Bishop(Piece.Color.BLACK, new BoardLocation(8,3));
+        board[8][4] = new Queen(Piece.Color.BLACK, new BoardLocation(8,4));
+        board[8][5] = new King(Piece.Color.BLACK, new BoardLocation(8,5));
+        board[8][6] = new Bishop(Piece.Color.BLACK, new BoardLocation(8,6));
+        board[8][7] = new Knight(Piece.Color.BLACK, new BoardLocation(8,7));
+        board[8][8] = new Rook(Piece.Color.BLACK, new BoardLocation(8,8));
+        for(int i = 1; i <= 8; i++) {
+            board[7][i] = new Pawn(Piece.Color.BLACK, new BoardLocation(7,i));
         }
     }
 
     private static void initPTS() {
-        int i = 1;
-        for(int j = 0; j < 8; j++) {
+        piecesToSquares = new HashMap<>();
+        int i = 2;
+        for(int j = 1; j <= 8; j++) {
             Set<BoardLocation> set = new HashSet<>();
             set.add(new BoardLocation(i+1, j));
             set.add(new BoardLocation(i+2, j));
             PlayChess.piecesToSquares.put(board[i][j], set);
         }
-        i = 6;
-        for(int j = 0; j < 8; j++) {
+        i = 7;
+        for(int j = 1; j <= 8; j++) {
             Set<BoardLocation> set = new HashSet<>();
             set.add(new BoardLocation(i-1, j));
             set.add(new BoardLocation(i-2, j));
@@ -144,16 +145,16 @@ public class PlayChess {
         Set<BoardLocation> set3 = new HashSet<>();
         set.add(new BoardLocation(getCoordinateRow("a3"), getCoordinateColumn("a3")));
         set.add(new BoardLocation(getCoordinateRow("c3"), getCoordinateColumn("c3")));
-        PlayChess.piecesToSquares.put(board[0][1], set);
+        PlayChess.piecesToSquares.put(board[1][2], set);
         set1.add(new BoardLocation(getCoordinateRow("f3"), getCoordinateColumn("f3")));
         set2.add(new BoardLocation(getCoordinateRow("h3"), getCoordinateColumn("h3")));
-        PlayChess.piecesToSquares.put(board[0][6], set1);
+        PlayChess.piecesToSquares.put(board[1][7], set1);
         set2.add(new BoardLocation(getCoordinateRow("a6"), getCoordinateColumn("a6")));
         set2.add(new BoardLocation(getCoordinateRow("c6"), getCoordinateColumn("c6")));
-        PlayChess.piecesToSquares.put(board[7][1], set2);
+        PlayChess.piecesToSquares.put(board[8][2], set2);
         set3.add(new BoardLocation(getCoordinateRow("f6"), getCoordinateColumn("f6")));
         set3.add(new BoardLocation(getCoordinateRow("h6"), getCoordinateColumn("h6")));
-        PlayChess.piecesToSquares.put(board[7][6], set3);
+        PlayChess.piecesToSquares.put(board[8][7], set3);
     }
 
     private static void initSTP() {
@@ -175,11 +176,11 @@ public class PlayChess {
     }
 
     private static int getCoordinateRow(String chessLingo) {
-        return chessLingo.charAt(0) - 97;
+        return chessLingo.charAt(0) - 96;
     }
 
     private static int getCoordinateColumn(String chessLingo) {
-        return chessLingo.charAt(1) - 49;
+        return chessLingo.charAt(1) - 48;
     }
 
     private static Piece identifyMovePiece(Set<Piece> set, Piece.PieceType type) {
@@ -225,8 +226,8 @@ public class PlayChess {
             set.clear();
             int currentRow = piece.boardLocation.row;
             int currentColumn = piece.boardLocation.column;
-            for(int i = 0; i < 8; i++) {
-                for(int j = 0; j < 8; j++) {
+            for(int i = 1; i <= 8; i++) {
+                for(int j = 1; j <= 8; j++) {
                     if(piece.validMove(board, currentRow, currentColumn, i, j, true) || piece.validMove(board, currentRow, currentColumn, i, j, false)) {
                         set.add(new BoardLocation(i, j));
                     }

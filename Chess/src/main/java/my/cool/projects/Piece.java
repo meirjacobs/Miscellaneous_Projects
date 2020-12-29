@@ -23,17 +23,17 @@ public abstract class Piece {
 
     public abstract boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn, boolean capture);
 
-    private boolean validateInput(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
+    protected boolean validateInput(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
         if(board == null) {
             System.err.println("Null board input");
             return false;
         }
-        if(board.length != 8 || board[0].length != 8) {
-            System.err.println("Board must be 8 x 8");
+        if(board.length != 9 || board[1].length != 9) {
+            System.err.println("Board must be 9 x 9");
             return false;
         }
-        if(currentRow < 0 || currentRow > 7 || currentColumn < 0 || currentColumn > 7 ||moveToRow < 0 || moveToRow > 7 || moveToColumn < 0 || moveToColumn > 7) {
-            System.err.println("Invalid current or intended location input. Must be between 0 and 7");
+        if(currentRow < 1 || currentRow > 8 || currentColumn < 1 || currentColumn > 8 ||moveToRow < 1 || moveToRow > 8 || moveToColumn < 1 || moveToColumn > 8) {
+            System.err.println("Invalid current or intended location input. Must be between 1 and 8");
             return false;
         }
         return true;
