@@ -26,11 +26,6 @@ public class King extends Piece {
                 return false;
             }
         }
-        //this method may not be necessary
-        if(!(board[currentRow][currentColumn] instanceof King)) {
-            System.err.printf("Piece at current location is a %s, not a King\n", board[currentRow][currentColumn].getClass());
-            return false;
-        }
         if(Math.max(Math.abs(moveToRow - currentRow), Math.abs(moveToColumn - currentColumn)) != 1) {
             System.err.println("King must move one square");
             return false;

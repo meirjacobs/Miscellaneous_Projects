@@ -36,6 +36,10 @@ public abstract class Piece {
             System.err.println("Invalid current or intended location input. Must be between 1 and 8");
             return false;
         }
+        if(board[currentRow][currentColumn] == null) {
+            System.err.println("No piece at current location");
+            return false;
+        }
         return true;
     }
 

@@ -10,8 +10,8 @@ public class Queen extends Piece {
     @Override
     public boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn, boolean capture) {
         validateInput(board, currentRow, currentColumn, moveToRow, moveToColumn);
-        if(board[currentRow][currentColumn] == null) {
-            System.err.println("No piece at current location");
+        if(currentColumn == moveToColumn && currentRow == moveToRow) {
+            System.err.println("You have not moved the Queen");
             return false;
         }
         if(!capture) {
@@ -26,21 +26,10 @@ public class Queen extends Piece {
                 return false;
             }
         }
-        //this method may not be necessary
-        if(!(board[currentRow][currentColumn] instanceof Queen)) {
-            System.err.printf("Piece at current location is a %s, not a Queen\n", board[currentRow][currentColumn].getClass());
-            return false;
-        }
         if((moveToColumn != currentColumn && moveToRow != currentRow) && (Math.abs(moveToRow - currentRow) != Math.abs(moveToColumn - currentColumn))) {
             System.err.println("Queen must move up-down or left-right or diagonally");
             return false;
         }
-        if(currentColumn == moveToColumn && currentRow == moveToRow) {
-            System.err.println("You have not moved the Queen");
-            return false;
-        }
-        int originalRow = currentRow;
-        int originalColumn = currentColumn;
         int deltaX = moveToRow - currentRow;
         int deltaY = moveToColumn - currentColumn;
         if(Math.abs(deltaX) == Math.abs(deltaY)) { // diagonal movement

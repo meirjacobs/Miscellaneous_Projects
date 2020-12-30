@@ -53,7 +53,7 @@ public class PlayChess {
     }
 
     private static int determineMoveToRow(String move) {
-        int row = move.charAt(move.length()-2) - 96;
+        int row = move.charAt(move.length()-1) - 48;
         if(row < 1 || row > 8) {
             System.err.println((char)row + "is not a valid row");
             return -1;
@@ -108,7 +108,7 @@ public class PlayChess {
         board[1][7] = new Knight(Piece.Color.WHITE, new BoardLocation(1,7));
         board[1][8] = new Rook(Piece.Color.WHITE, new BoardLocation(1,8));
         for(int i = 1; i <= 8; i++) {
-            board[1][i] = new Pawn(Piece.Color.WHITE, new BoardLocation(2,i));
+            board[2][i] = new Pawn(Piece.Color.WHITE, new BoardLocation(2,i));
         }
         board[8][1] = new Rook(Piece.Color.BLACK, new BoardLocation(8,1));
         board[8][2] = new Knight(Piece.Color.BLACK, new BoardLocation(8,2));
@@ -143,18 +143,34 @@ public class PlayChess {
         Set<BoardLocation> set1 = new HashSet<>();
         Set<BoardLocation> set2 = new HashSet<>();
         Set<BoardLocation> set3 = new HashSet<>();
-        set.add(new BoardLocation(getCoordinateRow("a3"), getCoordinateColumn("a3")));
-        set.add(new BoardLocation(getCoordinateRow("c3"), getCoordinateColumn("c3")));
+        set.add(new BoardLocation(getCoordinateColumn("a3"), getCoordinateRow("a3")));
+        set.add(new BoardLocation(getCoordinateColumn("c3"), getCoordinateRow("c3")));
         PlayChess.piecesToSquares.put(board[1][2], set);
-        set1.add(new BoardLocation(getCoordinateRow("f3"), getCoordinateColumn("f3")));
-        set2.add(new BoardLocation(getCoordinateRow("h3"), getCoordinateColumn("h3")));
+        set1.add(new BoardLocation(getCoordinateColumn("f3"), getCoordinateRow("f3")));
+        set1.add(new BoardLocation(getCoordinateColumn("h3"), getCoordinateRow("h3")));
         PlayChess.piecesToSquares.put(board[1][7], set1);
-        set2.add(new BoardLocation(getCoordinateRow("a6"), getCoordinateColumn("a6")));
-        set2.add(new BoardLocation(getCoordinateRow("c6"), getCoordinateColumn("c6")));
+        set2.add(new BoardLocation(getCoordinateColumn("a6"), getCoordinateRow("a6")));
+        set2.add(new BoardLocation(getCoordinateColumn("c6"), getCoordinateRow("c6")));
         PlayChess.piecesToSquares.put(board[8][2], set2);
-        set3.add(new BoardLocation(getCoordinateRow("f6"), getCoordinateColumn("f6")));
-        set3.add(new BoardLocation(getCoordinateRow("h6"), getCoordinateColumn("h6")));
+        set3.add(new BoardLocation(getCoordinateColumn("f6"), getCoordinateRow("f6")));
+        set3.add(new BoardLocation(getCoordinateColumn("h6"), getCoordinateRow("h6")));
         PlayChess.piecesToSquares.put(board[8][7], set3);
+        for(i = 1; i <= 2; i++) {
+            for(int j = 1; j <= 8; j++) {
+                Piece piece = board[i][j];
+                if(!piecesToSquares.containsKey(piece)) {
+                    piecesToSquares.put(piece, new HashSet<>());
+                }
+            }
+        }
+        for(i = 7; i <= 8; i++) {
+            for(int j = 1; j <= 8; j++) {
+                Piece piece = board[i][j];
+                if(!piecesToSquares.containsKey(piece)) {
+                    piecesToSquares.put(piece, new HashSet<>());
+                }
+            }
+        }
     }
 
     private static void initSTP() {
