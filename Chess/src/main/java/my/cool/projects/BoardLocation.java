@@ -22,6 +22,7 @@ public class BoardLocation {
     public void setLocation(int row, int column) {
         this.row = row;
         this.column = column;
+        this.chessLingo = PlayChess.toChessLingo(row, column);
     }
 
     @Override

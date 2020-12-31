@@ -6,6 +6,10 @@ public class PlayChess {
     private static HashMap<Piece, Set<BoardLocation>> piecesToSquares;
     private static HashMap<BoardLocation, Set<Piece>> squaresToPieces;
     private static Piece[][] board;
+    private static BoardLocation whiteKingLocation;
+    private static BoardLocation blackKingLocation;
+    private static boolean whiteInCheck;
+    private static boolean blackInCheck;
 
     public static void main(String[] args) {
         initializeBoard();
@@ -32,6 +36,7 @@ public class PlayChess {
             BoardLocation moveTo = new BoardLocation(toRow, toColumn);
             boolean successful = capture ? capture(piece, moveTo) : move(piece, moveTo);
             if(!successful) continue;
+            determineChecks();
             updateMaps();
             printBoard();
             whiteTurn = !whiteTurn;
@@ -115,6 +120,20 @@ public class PlayChess {
         return set.contains(move.charAt(1)) ? move.charAt(1) : 0;
     }
 
+    private static void determineChecks() {
+        for(Piece piece : piecesToSquares.keySet()) {
+            BoardLocation kingLocation = (piece.color == Piece.Color.WHITE) ? blackKingLocation : whiteKingLocation;
+            if(piece.validMove(board, piece.boardLocation.row, piece.boardLocation.column, kingLocation.row, kingLocation.column, true, false)) {
+                if(piece.color == Piece.Color.WHITE) {
+                    blackInCheck = true;
+                }
+                else {
+                    whiteInCheck = true;
+                }
+            }
+        }
+    }
+
     private static void initializeBoard() {
         board = new Piece[9][9];
         board[1][1] = new Rook(Piece.Color.WHITE, new BoardLocation(1,1));
@@ -122,6 +141,7 @@ public class PlayChess {
         board[1][3] = new Bishop(Piece.Color.WHITE, new BoardLocation(1,3));
         board[1][4] = new Queen(Piece.Color.WHITE, new BoardLocation(1,4));
         board[1][5] = new King(Piece.Color.WHITE, new BoardLocation(1,5));
+        whiteKingLocation = board[1][5].boardLocation;
         board[1][6] = new Bishop(Piece.Color.WHITE, new BoardLocation(1,6));
         board[1][7] = new Knight(Piece.Color.WHITE, new BoardLocation(1,7));
         board[1][8] = new Rook(Piece.Color.WHITE, new BoardLocation(1,8));
@@ -133,12 +153,15 @@ public class PlayChess {
         board[8][3] = new Bishop(Piece.Color.BLACK, new BoardLocation(8,3));
         board[8][4] = new Queen(Piece.Color.BLACK, new BoardLocation(8,4));
         board[8][5] = new King(Piece.Color.BLACK, new BoardLocation(8,5));
+        blackKingLocation = board[8][5].boardLocation;
         board[8][6] = new Bishop(Piece.Color.BLACK, new BoardLocation(8,6));
         board[8][7] = new Knight(Piece.Color.BLACK, new BoardLocation(8,7));
         board[8][8] = new Rook(Piece.Color.BLACK, new BoardLocation(8,8));
         for(int i = 1; i <= 8; i++) {
             board[7][i] = new Pawn(Piece.Color.BLACK, new BoardLocation(7,i));
         }
+        blackInCheck = false;
+        whiteInCheck = false;
     }
 
     private static void initPTS() {
@@ -237,7 +260,7 @@ public class PlayChess {
         if(nOfType == 0) {
             System.err.printf("There is no %s that can be moved to the desired square\n", type.toString());
         }
-        else if(nOfType == 2) {
+        else if(nOfType >= 2) {
             char which =specifyWhich(move);
             if(which != 0) { // The user properly specified which piece to be moved
                 nOfType = 0;
@@ -304,6 +327,14 @@ public class PlayChess {
                 }
             }
             piecesToSquares.put(piece, set);
+            if(piece.pieceType == Piece.PieceType.KING) {
+                if(piece.color == Piece.Color.WHITE) {
+                    whiteKingLocation = piece.boardLocation;
+                }
+                else {
+                    blackKingLocation = piece.boardLocation;
+                }
+            }
         }
         for(BoardLocation boardLocation : squaresToPieces.keySet()) {
             Set<Piece> set0 = squaresToPieces.get(boardLocation);
