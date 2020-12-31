@@ -21,7 +21,7 @@ public abstract class Piece {
 
     public enum Color {WHITE, BLACK};
 
-    public abstract boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn, boolean capture);
+    public abstract boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn, boolean capture, boolean printErrors);
 
     protected boolean validateInput(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn) {
         if(board == null) {
@@ -43,4 +43,32 @@ public abstract class Piece {
         return true;
     }
 
+    @Override
+    public String toString() {
+        String postfix = (color == Color.WHITE) ? "w" : "b";
+        String type;
+        switch (pieceType) {
+            case KING:
+                type = "K";
+                break;
+            case PAWN:
+                type = "P";
+                break;
+            case ROOK:
+                type = "R";
+                break;
+            case QUEEN:
+                type = "Q";
+                break;
+            case BISHOP:
+                type = "B";
+                break;
+            case KNIGHT:
+                type = "N";
+                break;
+            default:
+                throw new IllegalArgumentException("Illegal piece type");
+        }
+        return type + postfix;
+    }
 }

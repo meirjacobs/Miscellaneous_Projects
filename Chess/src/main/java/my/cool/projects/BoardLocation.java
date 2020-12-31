@@ -5,10 +5,18 @@ import java.util.Objects;
 public class BoardLocation {
     int row;
     int column;
+    String chessLingo;
 
     public BoardLocation(int row, int column) {
         this.row = row;
         this.column = column;
+        this.chessLingo = PlayChess.toChessLingo(row, column);
+    }
+
+    public BoardLocation(String chessLingo) {
+        this.chessLingo = chessLingo;
+        this.row = PlayChess.determineMoveToRow(chessLingo);
+        this.column = PlayChess.determineMoveToColumn(chessLingo);
     }
 
     public void setLocation(int row, int column) {

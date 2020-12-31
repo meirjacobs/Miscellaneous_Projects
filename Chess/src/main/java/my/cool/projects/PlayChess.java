@@ -25,25 +25,21 @@ public class PlayChess {
                 System.err.printf("Piece cannot move to [%d, %d]\n", toRow, toColumn);
                 continue;
             }
-            Piece piece = identifyMovePiece(set, pieceType);
+            Piece.Color color = whiteTurn ? Piece.Color.WHITE : Piece.Color.BLACK;
+            Piece piece = identifyMovePiece(set, pieceType, color, move);
             if(piece == null) continue;
-            if(!piece.validMove(board, piece.boardLocation.row, piece.boardLocation.column, toRow, toColumn, capture)) continue;
+            if(!piece.validMove(board, piece.boardLocation.row, piece.boardLocation.column, toRow, toColumn, capture, true)) continue;
             BoardLocation moveTo = new BoardLocation(toRow, toColumn);
             boolean successful = capture ? capture(piece, moveTo) : move(piece, moveTo);
             if(!successful) continue;
             updateMaps();
-
-
-
-
-
-
+            printBoard();
             whiteTurn = !whiteTurn;
         }
 
     }
 
-    private static int determineMoveToColumn(String move) {
+    protected static int determineMoveToColumn(String move) {
         int column = move.charAt(move.length()-2) - 96;
         if(column < 1 || column > 8) {
             System.err.println((char)column + "is not a valid column");
@@ -52,13 +48,20 @@ public class PlayChess {
         return column;
     }
 
-    private static int determineMoveToRow(String move) {
+    protected static int determineMoveToRow(String move) {
         int row = move.charAt(move.length()-1) - 48;
         if(row < 1 || row > 8) {
             System.err.println((char)row + "is not a valid row");
             return -1;
         }
         return row;
+    }
+
+    protected static String toChessLingo(int row, int column) {
+        char[] chars = new char[2];
+        chars[0] = (char)(column + 96);
+        chars[1] = (char)(row + 48);
+        return new String(chars);
     }
 
     private static boolean determineCapture(String move) {
@@ -95,6 +98,21 @@ public class PlayChess {
                 System.err.println(move.charAt(0) + " is not a valid piece");
                 return null;
         }
+    }
+
+    private static char specifyWhich(String move) {
+        if(move.indexOf('x') == -1) {
+            if(move.length() <= 3) {
+                return 0;
+            }
+        }
+        else {
+            if(move.length() <= 4) {
+                return 0;
+            }
+        }
+        Set<Character> set = new HashSet<>(Arrays.asList('a', 'b', 'c', 'd', 'e', 'f', 'g', 'h', '1', '2', '3', '4', '5', '6', '7', '8'));
+        return set.contains(move.charAt(1)) ? move.charAt(1) : 0;
     }
 
     private static void initializeBoard() {
@@ -189,6 +207,14 @@ public class PlayChess {
                 }
             }
         }
+        for(int i = 1; i <= 8; i++) {
+            for(int j = 1; j <= 8; j++) {
+                BoardLocation boardLocation = new BoardLocation(i, j);
+                if(!squaresToPieces.containsKey(boardLocation)) {
+                    squaresToPieces.put(boardLocation, new HashSet<>());
+                }
+            }
+        }
     }
 
     private static int getCoordinateRow(String chessLingo) {
@@ -199,11 +225,11 @@ public class PlayChess {
         return chessLingo.charAt(1) - 48;
     }
 
-    private static Piece identifyMovePiece(Set<Piece> set, Piece.PieceType type) {
+    private static Piece identifyMovePiece(Set<Piece> set, Piece.PieceType type, Piece.Color color, String move) {
         int nOfType = 0;
         Piece returnPiece = null;
         for(Piece piece : set) {
-            if(piece.pieceType.equals(type)) {
+            if(piece.pieceType.equals(type) && piece.color.equals(color)) {
                 nOfType++;
                 returnPiece = piece;
             }
@@ -211,7 +237,35 @@ public class PlayChess {
         if(nOfType == 0) {
             System.err.printf("There is no %s that can be moved to the desired square\n", type.toString());
         }
-        else if(nOfType > 1) {
+        else if(nOfType == 2) {
+            char which =specifyWhich(move);
+            if(which != 0) { // The user properly specified which piece to be moved
+                nOfType = 0;
+                for(Piece piece : set) {
+                    if(piece.boardLocation.chessLingo.indexOf(which) != -1) {
+                        nOfType++;
+                        returnPiece = piece;
+                    }
+                }
+                if(nOfType == 0) {
+                    System.err.println("Incorrectly specified piece. Please correctly identify which piece you want to move.");
+                    return null;
+                }
+                if(nOfType == 1) {
+                    return returnPiece;
+                }
+                nOfType = 0;
+                for(Piece piece : set) {
+                    if(move.substring(1,2).equals(piece.boardLocation.chessLingo)) {
+                        nOfType++;
+                        returnPiece = piece;
+                    }
+                }
+                if(nOfType == 1) {
+                    return returnPiece;
+                }
+                System.err.println("There are more than 2 pieces that can move to the given location. Please specify which.");
+            }
             System.err.printf("There is more than one %s that can be moved to the desired square\nPlease specify which in your move syntax\n", type.toString());
         }
         return nOfType == 1 ? returnPiece : null;
@@ -244,7 +298,7 @@ public class PlayChess {
             int currentColumn = piece.boardLocation.column;
             for(int i = 1; i <= 8; i++) {
                 for(int j = 1; j <= 8; j++) {
-                    if(piece.validMove(board, currentRow, currentColumn, i, j, true) || piece.validMove(board, currentRow, currentColumn, i, j, false)) {
+                    if(piece.validMove(board, currentRow, currentColumn, i, j, true, false) || piece.validMove(board, currentRow, currentColumn, i, j, false, false)) {
                         set.add(new BoardLocation(i, j));
                     }
                 }
@@ -259,10 +313,26 @@ public class PlayChess {
         for(Piece piece : piecesToSquares.keySet()) {
             for(BoardLocation square : piecesToSquares.get(piece)) {
                 Set<Piece> set = squaresToPieces.get(square);
+                if(set == null) set = new HashSet<>();
                 set.add(piece);
                 squaresToPieces.put(square, set);
             }
         }
+    }
+
+    private static void printBoard() {
+        for(int i = 8; i >= 1; i--) {
+            System.out.print(i + " |");
+            for(int j = 1; j <= 8; j++) {
+                if(board[i][j] == null) {
+                    System.out.print("  |");
+                    continue;
+                }
+                System.out.printf("%2s|", board[i][j].toString());
+            }
+            System.out.print("\n");
+        }
+        System.out.println("   a  b  c  d  e  f  g  h");
     }
 
 }

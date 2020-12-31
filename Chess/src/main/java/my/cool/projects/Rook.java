@@ -8,26 +8,26 @@ public class Rook extends Piece {
     }
 
     @Override
-    public boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn, boolean capture) {
+    public boolean validMove(Piece[][] board, int currentRow, int currentColumn, int moveToRow, int moveToColumn, boolean capture, boolean printErrors) {
         validateInput(board, currentRow, currentColumn, moveToRow, moveToColumn);
         if(!capture) {
             if(board[moveToRow][moveToColumn] != null) {
-                System.err.println("Move-to square is already occupied");
+                if(printErrors) System.err.println("Move-to square is already occupied");
                 return false;
             }
         }
         else {
             if(board[moveToRow][moveToColumn] != null && board[moveToRow][moveToColumn].color.equals(board[currentRow][currentColumn].color)) {
-                System.err.println("Cannot capture your own piece");
+                if(printErrors) System.err.println("Cannot capture your own piece");
                 return false;
             }
         }
         if(moveToColumn != currentColumn && moveToRow != currentRow) {
-            System.err.println("Rooks must move up-down or left-right");
+            if(printErrors) System.err.println("Rooks must move up-down or left-right");
             return false;
         }
         if(currentColumn == moveToColumn && currentRow == moveToRow) {
-            System.err.println("You have not moved the Rook");
+            if(printErrors) System.err.println("You have not moved the Rook");
             return false;
         }
         int direction;
@@ -35,7 +35,7 @@ public class Rook extends Piece {
             direction = moveToRow - currentRow;
             for(; currentRow != moveToRow; currentRow += direction) {
                 if(board[currentRow][currentColumn] != null) {
-                    System.err.println("Cannot move Rook because there is a piece in the way of the destination");
+                    if(printErrors) System.err.println("Cannot move Rook because there is a piece in the way of the destination");
                     return false;
                 }
             }
@@ -44,7 +44,7 @@ public class Rook extends Piece {
             direction = moveToColumn - currentColumn;
             for(; currentColumn != moveToColumn; currentColumn += direction) {
                 if(board[currentRow][currentColumn] != null) {
-                    System.err.println("Cannot move Rook because there is a piece in the way of the destination");
+                    if(printErrors) System.err.println("Cannot move Rook because there is a piece in the way of the destination");
                     return false;
                 }
             }
