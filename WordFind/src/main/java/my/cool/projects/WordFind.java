@@ -28,7 +28,11 @@ public class WordFind {
     }
 
     public static void main(String[] args) throws IOException {
-        if(args.length != 2 || args[0] == null || args[1] == null) throw new IllegalArgumentException("Usage: [file] [word]");
+        if(args.length != 2 || args[0] == null || args[1] == null) {
+            throw new IllegalArgumentException("Usage: WordFind file word\n" +
+                    "\tfile: the file containing the word find text\n" +
+                    "\tword: the word to be searched for in the word find");
+        }
         File wordFindFile = new File(args[0]);
         List<char[]> charList = new ArrayList<>();
         Files.lines(wordFindFile.toPath()).forEach(line -> charList.add(line.toCharArray()));
